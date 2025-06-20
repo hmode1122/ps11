@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PS4 11.00 Exploit Host</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  h1 { margin-bottom: 1rem; }
+  #status {
+    margin: 20px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<h1>PS4 11.00 Exploit Host</h1>
+<div id="status">جارِ تحميل الاستغلال...</div>
+
+<script>
+// رابط الملفات (تقدر تعدلها حسب مكانك)
+const PAYLOADS_BASE = './payloads/';
+
+// ملفات البايلود (kernel + goldhen + اضافات)
+const PAYLOADS = [
+  'kernel_exploit.bin',
+  'goldhen.bin',
+  'ftp_payload.bin'
+];
+
+// تحميل ملفات بايلود ثنائية وارسالها
+async function fetchPayload(name) {
+  const res = await fetch(PAYLOADS_BASE + name);
+  if (!res.ok) throw new Error('فشل تحميل ' + name);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+// إرسال البايلود للنظام (دالة وهمية، استبدلها بدالة الاستغلال الخاصة)
+async function sendPayload(data, index) {
+  // هنا يتم تنفيذ استغلال Kernel
+  document.getElementById('status').textContent = `تفعيل البايلود ${PAYLOADS[index]}...`;
+  await new Promise(r => setTimeout(r, 1500)); // محاكاة تأخير
+}
+
+// استغلال WebKit (مثال وهمي)
+async function runWebKitExploit() {
+  document.getElementById('status').textContent = 'تشغيل استغلال WebKit...';
+  await new Promise(r => setTimeout(r, 2000)); // تأخير وهمي
+  document.getElementById('status').textContent = 'نجح استغلال WebKit!';
+}
+
+async function main() {
+  try {
+    await runWebKitExploit();
+
+    for (let i = 0; i < PAYLOADS.length; i++) {
+      const payload = await fetchPayload(PAYLOADS[i]);
+      await sendPayload(payload, i);
+    }
+
+    document.getElementById('status').textContent = 'تم التفعيل بنجاح! GoldHEN يعمل الآن.';
+  } catch (e) {
+    document.getElementById('status').textContent = 'خطأ: ' + e.message;
+  }
+}
+
+main();
+</script>
+</body>
+</html>
